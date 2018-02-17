@@ -4,7 +4,7 @@ class Board {
     for(let i = 0; i < cols; i++) {
       tiles[i] = []
       for(let j = 0; j < cols; j++) {
-        tiles[i][j] = new Tile(i, j, res, 0)
+        tiles[i][j] = new Tile(i, j, res, res / 10, 0)
       }
     }
     return tiles
@@ -17,7 +17,8 @@ class Board {
       for(let i = 0; i < cols; i++) {
         for(let j = 0; j < cols; j++) {
           if(tiles[i][j].x === randX && tiles[i][j].y === randY && tiles[i][j].value === 0) {
-            random(0, 1) >= 0.25 ? tiles[i][j].value = 2 : tiles[i][j].value = 4
+            random(0, 1) >= 0.1 ? tiles[i][j].value = 2 : tiles[i][j].value = 4
+            tiles[i][j].spawning = true
             return tiles
           }
         }
@@ -25,34 +26,29 @@ class Board {
     }
   }
 
-  static shift() {
-    for(let k = 0; k < cols; k++) {
-      for(let i = 0; i < cols; i++) {
-        for(let j = cols - 2; j >= 0; j--) {
-          if(tiles[i][j].value !== 0 && tiles[i][j+1].value === 0) {
-            tiles[i][j+1].value = tiles[i][j].value
-            tiles[i][j].value = 0
-            moved = true
-          }
-        }
-      }
+  static shift(row, idx) {
+    let arr = row.filter(tile => tile.value)
+    let missing = cols - arr.length
+    let zeros = Array(missing).fill(new Tile(0, 0, res, res / 10, 0))
+    for(let i = 0; i < zeros.length; i++) {
+      zeros[i].y = idx
+      zeros[i].x = i
     }
-    return tiles
+    for(let i = 0; i < arr.length; i++) {
+      arr[i].x = i + zeros.length
+    }
+    arr = zeros.concat(arr)
+    return arr
   }
 
-  static merge() {
-    for(let k = 0; k < cols; k++) {
-      for(let i = 0; i < cols; i++) {
-        for(let j = cols - 1; j >= 1; j--) {
-          if(tiles[i][j].value === tiles[i][j-1].value) {
-            tiles[i][j].value *= 2
-            tiles[i][j-1].value = 0
-            moved = true
-          }
-        }
+  static merge(row) {
+    for(let i = cols - 1; i >= 1; i--) {
+      if(row[i].value === row[i-1].value) {
+        row[i].value *= 2
+        row[i-1].value = 0
       }
     }
-    return tiles
+    return row
   }
 
   static rotateClock() {
