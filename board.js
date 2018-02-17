@@ -45,6 +45,7 @@ class Board {
     for(let i = cols - 1; i >= 1; i--) {
       if(row[i].value === row[i-1].value) {
         row[i].value *= 2
+        score += row[i].value
         row[i-1].value = 0
       }
     }
@@ -98,6 +99,7 @@ class Board {
   }
 
   static sampleBoard(tiles) {
+    sample = true
     let lastNum = 1
     for(let i = 0; i < cols; i++) {
       for(let j = 0; j < cols; j++) {

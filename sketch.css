@@ -11,3 +11,7 @@ body {
 canvas {
   margin:auto;
 }
+
+p {
+  font-size: 30px;
+}

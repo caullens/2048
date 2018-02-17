@@ -4,6 +4,9 @@ let cols = 4
 let wWidth = 501
 let maxTile = 0
 let gameOver = false
+let sample = false
+let score = 0
+let pScore
 
 function setup() {
 	res = floor(wWidth / cols)
@@ -13,10 +16,13 @@ function setup() {
 	tiles = Board.init(tiles)
 	tiles = Board.spawnTile(tiles)
 	tiles = Board.spawnTile(tiles)
+	pScore = createP()
+	pScore.html(`Score: ${score}`)
 }
 
 function mousePressed() {
-	if(gameOver) location.reload()
+	if(gameOver && !sample) location.reload()
+	return false
 }
 
 function keyPressed() {
@@ -65,6 +71,7 @@ function keyPressed() {
     if (changed) {
       tiles = Board.spawnTile(tiles)
     }
+		pScore.html(`Score: ${score}`)
   }
 }
 
@@ -99,7 +106,7 @@ function compare(a, b) {
 }
 
 function draw() {
-	background(120)
+	background(184)
 	for(let i = 0; i < cols; i++) {
 		for(let j = 0; j < cols; j++) {
 			tiles[i][j].show()
@@ -110,11 +117,11 @@ function draw() {
 		}
 	}
 	gameOver = isGameOver()
-	if(gameOver) {
-		rectMode(CENTER)
-		fill(51)
+	if(gameOver && !sample) {
+		noStroke()
+		fill('rgba(255, 150, 150, 0.7)')
 		let size = map(width, 1, window.innerWidth, 1, 100)
-		rect(width/2, height/2, width, size)
+		rect(0, 0, width, height)
 		textAlign(CENTER, CENTER)
 		textSize(size)
 		fill(255)
